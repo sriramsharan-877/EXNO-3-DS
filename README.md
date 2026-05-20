@@ -31,8 +31,95 @@ We use this categorical data encoding technique when the features are nominal(do
 • Yeojohnson method
 
 # CODING AND OUTPUT:
-       # INCLUDE YOUR CODING AND OUTPUT SCREENSHOTS HERE
-# RESULT:
-       # INCLUDE YOUR RESULT HERE
+```
+# Step 1: Import Necessary Libraries
 
-       
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder, StandardScaler, PowerTransformer
+from scipy.stats import boxcox
+
+# Step 2: Load the Dataset
+
+import pandas as pd
+
+data = pd.read_csv("Data_to_Transform.csv")
+
+print("Original Dataset:")
+print(data.head())
+```
+<img width="819" height="380" alt="image" src="https://github.com/user-attachments/assets/46e0c575-63ae-483d-8690-8a751039f029" />
+
+```
+#Handle Missing Values (Fill numeric columns with mean)
+
+data.fillna(data.mean(numeric_only=True), inplace=True)
+
+```
+
+<img width="1006" height="478" alt="image" src="https://github.com/user-attachments/assets/9dfb7287-b4dc-4f10-a1d0-597ab8f98291" />
+
+```
+
+#Select a suitable numeric column for transformation
+
+numeric_column = data.select_dtypes(include=np.number).columns[0]
+
+print(f"\nColumn Selected for Transformation: {numeric_column}")
+
+```
+
+Column Selected for Transformation: Moderate Positive Skew
+
+```
+
+#Keep only positive values for log and boxcox
+
+positive_data = data[data[numeric_column] > 0].copy()
+
+#Log Transformation
+
+positive_data['Log_Transform'] = np.log(positive_data[numeric_column])
+
+#Reciprocal Transformation
+
+positive_data['Reciprocal_Transform'] = 1 / positive_data[numeric_column]
+
+#Square root Transformation
+
+positive_data['Sqrt_Transform'] = np.sqrt(positive_data[numeric_column])
+
+#Square Transform
+
+positive_data['Square_Transform'] = np.square(positive_data[numeric_column])
+
+#Box_cox Transform
+
+positive_data['BoxCox_Transform'], lambda_value = boxcox(positive_data[numeric_column])
+
+print(f"\nBox-Cox Lambda Value: {lambda_value}")
+
+#Power Transform
+
+pt = PowerTransformer(method='yeo-johnson')
+data['YeoJohnson_Transform'] = pt.fit_transform(data[[numeric_column]])
+
+#StandardScaler
+
+scaler = StandardScaler()
+data['Standard_Scaled'] = scaler.fit_transform(data[[numeric_column]])
+
+```
+
+```
+
+#StandardScaler
+
+scaler = StandardScaler()
+data['Standard_Scaled'] = scaler.fit_transform(data[[numeric_column]])
+
+```
+<img width="873" height="598" alt="image" src="https://github.com/user-attachments/assets/b06b2701-6822-4ddf-845e-e7a54cc33e6b" />
+
+# RESULT:
+ Thus the Implementation of Feature Encoding and Feature Transformation executed successfully.
